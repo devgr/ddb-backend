@@ -1,13 +1,13 @@
 using System;
 using System.Threading.Tasks;
 using Ddb.Domain.Commands;
-using Ddb.Domain.Events;
+using Ddb.Domain.Views;
 
 namespace Ddb.Application.Abstractions
 {
     public interface IApplicationService
     {
-        Task<CharacterUpdated> CreateCharacterAsync(CreateCharacter command);
-        Task<CharacterUpdated> GetCharacterAsync(Guid id);
+        Task<CharacterView> CreateCharacterAsync(CreateCharacter command);
+        Task<CharacterView> GetCharacterAsync(Guid id);
     }
 }

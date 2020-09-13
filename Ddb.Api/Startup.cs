@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Ddb.Application.Abstractions;
 using Ddb.Application.Services;
 using Ddb.Infrastructure.Repositories;
+using Ddb.Infrastructure.EventBus;
 
 namespace Ddb.Api
 {
@@ -32,6 +33,7 @@ namespace Ddb.Api
 
             // Add infrastructure
             services.AddSingleton<ICharacterRepository, DummyCharacterRepository>();
+            services.AddSingleton<IEventBus, DummyEventBus>();
 
             // Add application services
             services.AddSingleton<IApplicationService, ApplicationService>();

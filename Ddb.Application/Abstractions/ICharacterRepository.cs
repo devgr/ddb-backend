@@ -8,5 +8,7 @@ namespace Ddb.Application.Abstractions
     {
         Task<Character> GetByIdAsync(Guid id);
         Task SaveAsync(Character character);
+        Character GetById(Guid id);
+        void Save(Character character);
     }
 }

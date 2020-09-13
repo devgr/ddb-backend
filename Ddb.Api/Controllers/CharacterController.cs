@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using Ddb.Api.Models;
 using Ddb.Application.Abstractions;
 using Ddb.Application.Exceptions;
-using Ddb.Domain.Events;
+using Ddb.Domain.Views;
 
 namespace Ddb.Api.Controllers
 {
@@ -25,7 +25,7 @@ namespace Ddb.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CharacterUpdated>> Post(CharacterRequest request)
+        public async Task<ActionResult<CharacterView>> Post(CharacterRequest request)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace Ddb.Api.Controllers
         }
 
         [HttpGet("{id:Guid}")]
-        public async Task<ActionResult<CharacterUpdated>> Get(Guid id)
+        public async Task<ActionResult<CharacterView>> Get(Guid id)
         {
             try
             {

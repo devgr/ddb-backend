@@ -1,14 +1,14 @@
 using System;
 using Ddb.Domain.Models;
 
-namespace Ddb.Domain.Events
+namespace Ddb.Domain.Views
 {
-    public class CharacterUpdated
+    public class CharacterView
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
 
-        public CharacterUpdated(Character character)
+        public CharacterView(Character character)
         {
             Id = character.Id;
             Name = character.Name;
