@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Ddb.Api.Models;
 using Ddb.Application.Abstractions;
+using Ddb.Application.Exceptions;
 using Ddb.Domain.Events;
 
 namespace Ddb.Api.Controllers
@@ -33,7 +34,14 @@ namespace Ddb.Api.Controllers
         [HttpGet("{id:Guid}")]
         public async Task<ActionResult<CharacterUpdated>> Get(Guid id)
         {
-            return await _applicationService.GetCharacterAsync(id);
+            try
+            {
+                return await _applicationService.GetCharacterAsync(id);
+            }
+            catch (CharacterNotFoundException e)
+            {
+                return NotFound(new ErrorResponse(e));
+            }
         }
     }
 }

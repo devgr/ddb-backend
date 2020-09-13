@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Ddb.Application.Abstractions;
+using Ddb.Application.Exceptions;
 using Ddb.Domain.Models;
 
 namespace Ddb.Infrastructure.Repositories
@@ -25,7 +26,10 @@ namespace Ddb.Infrastructure.Repositories
 
         public Character GetById(Guid id)
         {
-            // TODO: Check for existance, then throw application exception
+            if (!_characterCollection.ContainsKey(id))
+            {
+                throw new CharacterNotFoundException($"Character with Id {id} not found");
+            }
             return _characterCollection[id];
         }
 
