@@ -27,8 +27,16 @@ namespace Ddb.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<CharacterUpdated>> Post(CharacterRequest request)
         {
-            var command = request.ToCommand();
-            return await _applicationService.CreateCharacterAsync(command);
+            try
+            {
+                var command = request.ToCommand();
+                return await _applicationService.CreateCharacterAsync(command);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Unhandled exception in /characters POST");
+                return StatusCode(500, new ErrorResponse(e));
+            }
         }
 
         [HttpGet("{id:Guid}")]
@@ -41,6 +49,11 @@ namespace Ddb.Api.Controllers
             catch (CharacterNotFoundException e)
             {
                 return NotFound(new ErrorResponse(e));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Unhandled exception in /characters GET");
+                return StatusCode(500, new ErrorResponse(e));
             }
         }
     }
