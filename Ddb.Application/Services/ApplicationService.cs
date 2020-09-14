@@ -32,5 +32,15 @@ namespace Ddb.Application.Services
             var character = await _characterRepository.GetByIdAsync(id);
             return new CharacterView(character);
         }
+
+        public async Task<CharacterView> AddTemporaryHpAsync(Guid id, AddTemporaryHp command)
+        {
+            var character = await _characterRepository.GetByIdAsync(id);
+            character.Hp.AddTemporaryHp(command.TemporaryHp);
+            await _characterRepository.SaveAsync(character);
+            var characterView = new CharacterView(character);
+            await _eventBus.PublishAsync<CharacterView>(characterView);
+            return characterView;
+        }
     }
 }

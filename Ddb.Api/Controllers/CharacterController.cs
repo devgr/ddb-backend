@@ -58,5 +58,25 @@ namespace Ddb.Api.Controllers
                 return StatusCode(500, new ErrorResponse(e));
             }
         }
+
+        [HttpPut("{id:Guid}/buff")]
+        public async Task<ActionResult<CharacterResponse>> PutTemporaryHp(Guid id, [FromBody] TemporaryHpRequest request)
+        {
+            try
+            {
+                var command = request.ToCommand();
+                var view = await _applicationService.AddTemporaryHpAsync(id, command);
+                return new CharacterResponse(view);
+            }
+            catch (CharacterNotFoundException e)
+            {
+                return NotFound(new ErrorResponse(e));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Unhandled exception in /characters GET");
+                return StatusCode(500, new ErrorResponse(e));
+            }
+        }
     }
 }

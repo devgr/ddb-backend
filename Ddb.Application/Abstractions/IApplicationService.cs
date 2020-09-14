@@ -9,5 +9,6 @@ namespace Ddb.Application.Abstractions
     {
         Task<CharacterView> CreateCharacterAsync(CreateCharacter command);
         Task<CharacterView> GetCharacterAsync(Guid id);
+        Task<CharacterView> AddTemporaryHpAsync(Guid id, AddTemporaryHp command);
     }
 }

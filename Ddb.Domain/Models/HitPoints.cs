@@ -45,5 +45,16 @@ namespace Ddb.Domain.Models
         {
             Vulnerabilities.Add(damageType);
         }
+
+        public void AddTemporaryHp(int temporaryHp)
+        {
+            // When new temporary hit points are added, the player can choose to keep their current
+            // temporary hp, or take the new temporary hp. The new temporary hp cannot be added
+            // to the existing teporary hp. For this implementation, it will choose the largest.
+            if (temporaryHp > TemporaryHp)
+            {
+                TemporaryHp = temporaryHp;
+            }
+        }
     }
 }
