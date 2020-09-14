@@ -1,5 +1,6 @@
 using System;
 using Ddb.Domain.Views;
+using Ddb.Domain.Enums;
 
 namespace Ddb.Api.Models
 {
@@ -7,6 +8,11 @@ namespace Ddb.Api.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public int MaxHp { get; set; }
+        public int CurrentHp { get; set; }
+        public int TemporaryHp { get; set; }
+        public LifeStatus Status { get; set; }
+        public int DeathSavingThrowCount { get; set; }
 
         public CharacterResponse(CharacterView characterView)
         {
@@ -15,6 +21,11 @@ namespace Ddb.Api.Models
             // can remain the same.
             Id = characterView.Id;
             Name = characterView.Name;
+            MaxHp = characterView.MaxHp;
+            CurrentHp = characterView.CurrentHp;
+            TemporaryHp = characterView.TemporaryHp;
+            Status = characterView.Status;
+            DeathSavingThrowCount = characterView.DeathSavingThrowCount;
         }
     }
 }

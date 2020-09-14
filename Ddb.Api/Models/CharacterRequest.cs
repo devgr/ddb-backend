@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using Ddb.Domain.Commands;
 using Ddb.Domain.Enums;
 
@@ -25,10 +26,14 @@ namespace Ddb.Api.Models
             // Note: Currently, this is a one-to-one translation to the CreateCharacter command. This
             // request class is used so that the domain model can change in the future, but the API 
             // contract can remain the same.
-            // Additional validation could also be added to this request class.
             return new CreateCharacter
             {
-                Name = Name
+                Name = Name,
+                Level = Level,
+                Classes = Classes.Select((x) => x.ToCommand()),
+                Stats = Stats.ToCommand(),
+                Items = Items?.Select((x) => x.ToCommand()),
+                Defenses = Defenses?.Select((x) => x.ToCommand())
             };
         }
     }
@@ -45,6 +50,16 @@ namespace Ddb.Api.Models
         [Required]
         [Range(1, Int32.MaxValue)]
         public int ClassLevel { get; set; }
+
+        public CreateCharacterClass ToCommand()
+        {
+            return new CreateCharacterClass
+            {
+                Name = Name,
+                HitDiceValue = HitDiceValue,
+                ClassLevel = ClassLevel
+            };
+        }
     }
 
     public class StatsRequest
@@ -68,6 +83,19 @@ namespace Ddb.Api.Models
 
         [Required]
         public int Charisma { get; set; }
+
+        public CreateStats ToCommand()
+        {
+            return new CreateStats
+            {
+                Strength = Strength,
+                Dexterity = Dexterity,
+                Constitution = Constitution,
+                Intelligence = Intelligence,
+                Wisdom = Wisdom,
+                Charisma = Charisma
+            };
+        }
     }
 
     public class ItemRequest
@@ -77,6 +105,16 @@ namespace Ddb.Api.Models
         public ItemModifierRequest Modifier { get; set; }
         // Items can also include defenses when equipted
         public IEnumerable<DefenseRequest> Defenses { get; set; }
+
+        public CreateItem ToCommand()
+        {
+            return new CreateItem
+            {
+                Name = Name,
+                Modifier = Modifier?.ToCommand(),
+                Defenses = Defenses?.Select((x) => x.ToCommand())
+            };
+        }
     }
 
     public class ItemModifierRequest
@@ -90,6 +128,16 @@ namespace Ddb.Api.Models
 
         [Required]
         public int Value { get; set; }
+
+        public CreateItemModifier ToCommand()
+        {
+            return new CreateItemModifier
+            {
+                AffectedObject = AffectedObject,
+                AffectedValue = AffectedValue,
+                Value = Value
+            };
+        }
     }
 
     public class DefenseRequest
@@ -99,5 +147,14 @@ namespace Ddb.Api.Models
 
         [Required]
         public DamageModifierTypes Defense { get; set; }
+
+        public CreateDefense ToCommand()
+        {
+            return new CreateDefense
+            {
+                Type = Type,
+                Defense = Defense
+            };
+        }
     }
 }

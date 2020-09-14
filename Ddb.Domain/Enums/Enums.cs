@@ -35,4 +35,11 @@ namespace Ddb.Domain.Enums
         Immunity,
         Vulnerability
     }
+
+    public enum LifeStatus
+    {
+        Stable,
+        Dying,
+        Dead
+    }
 }
