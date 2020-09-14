@@ -25,12 +25,13 @@ namespace Ddb.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CharacterView>> Post(CharacterRequest request)
+        public async Task<ActionResult<CharacterResponse>> Post(CharacterRequest request)
         {
             try
             {
                 var command = request.ToCommand();
-                return await _applicationService.CreateCharacterAsync(command);
+                var view = await _applicationService.CreateCharacterAsync(command);
+                return new CharacterResponse(view);
             }
             catch (Exception e)
             {
@@ -40,11 +41,12 @@ namespace Ddb.Api.Controllers
         }
 
         [HttpGet("{id:Guid}")]
-        public async Task<ActionResult<CharacterView>> Get(Guid id)
+        public async Task<ActionResult<CharacterResponse>> Get(Guid id)
         {
             try
             {
-                return await _applicationService.GetCharacterAsync(id);
+                var view = await _applicationService.GetCharacterAsync(id);
+                return new CharacterResponse(view);
             }
             catch (CharacterNotFoundException e)
             {
