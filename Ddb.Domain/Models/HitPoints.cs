@@ -17,7 +17,8 @@ namespace Ddb.Domain.Models
         // with an id to allow for removing specific immunities / resistances / vulnerabilities.
 
         public LifeStatus Status { get; set; }
-        public int DeathSavingThrowCount { get; set; }
+        public int DeathSavingThrowSuccesses { get; set; }
+        public int DeathSavingThrowFailures { get; set; }
 
         public HitPoints(int hp)
         {
@@ -28,7 +29,8 @@ namespace Ddb.Domain.Models
             Resistances = new List<DamageTypes>();
             Vulnerabilities = new List<DamageTypes>();
             Status = LifeStatus.Stable;
-            DeathSavingThrowCount = 0;
+            DeathSavingThrowSuccesses = 0;
+            DeathSavingThrowFailures = 0;
         }
 
         public void AddImmunity(DamageTypes damageType)
@@ -54,6 +56,25 @@ namespace Ddb.Domain.Models
             if (temporaryHp > TemporaryHp)
             {
                 TemporaryHp = temporaryHp;
+            }
+        }
+
+        public void HealHp(int hp)
+        {
+            // Hit points are added to the current hit points, up to the max.
+            // Temporary hit points are not healed.
+            // If the character was dying, they are now stable.
+            CurrentHp += hp;
+            if (CurrentHp > MaxHp)
+            {
+                CurrentHp = MaxHp;
+            }
+
+            if (Status == LifeStatus.Dying)
+            {
+                Status = LifeStatus.Stable;
+                DeathSavingThrowSuccesses = 0;
+                DeathSavingThrowFailures = 0;
             }
         }
     }

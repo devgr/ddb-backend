@@ -42,5 +42,15 @@ namespace Ddb.Application.Services
             await _eventBus.PublishAsync<CharacterView>(characterView);
             return characterView;
         }
+
+        public async Task<CharacterView> HealHpAsync(Guid id, HealHp command)
+        {
+            var character = await _characterRepository.GetByIdAsync(id);
+            character.Hp.HealHp(command.Hp);
+            await _characterRepository.SaveAsync(character);
+            var characterView = new CharacterView(character);
+            await _eventBus.PublishAsync<CharacterView>(characterView);
+            return characterView;
+        }
     }
 }

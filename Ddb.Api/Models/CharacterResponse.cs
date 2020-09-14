@@ -12,7 +12,8 @@ namespace Ddb.Api.Models
         public int CurrentHp { get; set; }
         public int TemporaryHp { get; set; }
         public LifeStatus Status { get; set; }
-        public int DeathSavingThrowCount { get; set; }
+        public int DeathSavingThrowSuccesses { get; set; }
+        public int DeathSavingThrowFailures { get; set; }
 
         public CharacterResponse(CharacterView characterView)
         {
@@ -25,7 +26,8 @@ namespace Ddb.Api.Models
             CurrentHp = characterView.CurrentHp;
             TemporaryHp = characterView.TemporaryHp;
             Status = characterView.Status;
-            DeathSavingThrowCount = characterView.DeathSavingThrowCount;
+            DeathSavingThrowSuccesses = characterView.DeathSavingThrowSuccesses;
+            DeathSavingThrowFailures = characterView.DeathSavingThrowFailures;
         }
     }
 }

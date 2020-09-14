@@ -74,7 +74,27 @@ namespace Ddb.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Unhandled exception in /characters GET");
+                _logger.LogError(e, "Unhandled exception in /characters/<id>/buff PUT");
+                return StatusCode(500, new ErrorResponse(e));
+            }
+        }
+
+        [HttpPut("{id:Guid}/heal")]
+        public async Task<ActionResult<CharacterResponse>> PutHealing(Guid id, [FromBody] HealingRequest request)
+        {
+            try
+            {
+                var command = request.ToCommand();
+                var view = await _applicationService.HealHpAsync(id, command);
+                return new CharacterResponse(view);
+            }
+            catch (CharacterNotFoundException e)
+            {
+                return NotFound(new ErrorResponse(e));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Unhandled exception in /characters/<id>/buff PUT");
                 return StatusCode(500, new ErrorResponse(e));
             }
         }

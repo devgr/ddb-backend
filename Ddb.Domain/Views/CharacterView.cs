@@ -12,7 +12,8 @@ namespace Ddb.Domain.Views
         public int CurrentHp { get; set; }
         public int TemporaryHp { get; set; }
         public LifeStatus Status { get; set; }
-        public int DeathSavingThrowCount { get; set; }
+        public int DeathSavingThrowSuccesses { get; set; }
+        public int DeathSavingThrowFailures { get; set; }
 
         public CharacterView(Character character)
         {
@@ -22,7 +23,8 @@ namespace Ddb.Domain.Views
             CurrentHp = character.Hp.CurrentHp;
             TemporaryHp = character.Hp.TemporaryHp;
             Status = character.Hp.Status;
-            DeathSavingThrowCount = character.Hp.DeathSavingThrowCount;
+            DeathSavingThrowSuccesses = character.Hp.DeathSavingThrowSuccesses;
+            DeathSavingThrowFailures = character.Hp.DeathSavingThrowFailures;
         }
     }
 }
