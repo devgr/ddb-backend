@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Ddb.Application.Abstractions;
 using Ddb.Domain.Services;
 using Ddb.Domain.Commands;
@@ -47,6 +48,16 @@ namespace Ddb.Application.Services
         {
             var character = await _characterRepository.GetByIdAsync(id);
             character.Hp.HealHp(command.Hp);
+            await _characterRepository.SaveAsync(character);
+            var characterView = new CharacterView(character);
+            await _eventBus.PublishAsync<CharacterView>(characterView);
+            return characterView;
+        }
+
+        public async Task<CharacterView> DealDamageAsync(Guid id, IEnumerable<DealDamage> commands)
+        {
+            var character = await _characterRepository.GetByIdAsync(id);
+            character.Hp.DealDamages(commands);
             await _characterRepository.SaveAsync(character);
             var characterView = new CharacterView(character);
             await _eventBus.PublishAsync<CharacterView>(characterView);

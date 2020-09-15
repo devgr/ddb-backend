@@ -94,7 +94,27 @@ namespace Ddb.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Unhandled exception in /characters/<id>/buff PUT");
+                _logger.LogError(e, "Unhandled exception in /characters/<id>/heal PUT");
+                return StatusCode(500, new ErrorResponse(e));
+            }
+        }
+
+        [HttpPut("{id:Guid}/damage")]
+        public async Task<ActionResult<CharacterResponse>> PutDamage(Guid id, [FromBody] IEnumerable<DamageRequest> requests)
+        {
+            try
+            {
+                var commands = requests.Select(x => x.ToCommand());
+                var view = await _applicationService.DealDamageAsync(id, commands);
+                return new CharacterResponse(view);
+            }
+            catch (CharacterNotFoundException e)
+            {
+                return NotFound(new ErrorResponse(e));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Unhandled exception in /characters/<id>/damage PUT");
                 return StatusCode(500, new ErrorResponse(e));
             }
         }
