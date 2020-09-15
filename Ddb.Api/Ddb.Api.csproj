@@ -1,22 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <ItemGroup>
     <ProjectReference Include="..\Ddb.Application\Ddb.Application.csproj" />
     <ProjectReference Include="..\Ddb.Domain\Ddb.Domain.csproj" />
     <ProjectReference Include="..\Ddb.Infrastructure\Ddb.Infrastructure.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.0" />
   </ItemGroup>
-
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <UserSecretsId>f23913d8564402b08afa3c15499a27bf</UserSecretsId>
   </PropertyGroup>
-
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-
 </Project>
