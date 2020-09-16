@@ -21,7 +21,7 @@ namespace Ddb.Application.Services
 
         public async Task<CharacterView> CreateCharacterAsync(CreateCharacter command)
         {
-            var character = CharacterFactory.New(command);
+            var character = new CharacterFactory().BuildCharacter(command);
             await _characterRepository.SaveAsync(character);
             var characterView = new CharacterView(character);
             await _eventBus.PublishAsync<CharacterView>(characterView);

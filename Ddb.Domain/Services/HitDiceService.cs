@@ -8,20 +8,26 @@ namespace Ddb.Domain.Services
 {
     public class HitDiceService
     {
-        public static int CalculateInitialHP(IEnumerable<CreateCharacterClass> classes, int constitutionMod)
+        private readonly DiceRollService _diceRollService;
+
+        public HitDiceService(DiceRollService diceRollService = null)
+        {
+            _diceRollService = diceRollService != null ? diceRollService : DiceRollService.GetInstance();
+        }
+
+        public int CalculateInitialHP(IEnumerable<CreateCharacterClass> classes, int constitutionMod)
         {
             // Assumption: The first class in the classes list was the class that the character started as.
-
-            var roller = DiceRollService.GetInstance();
 
             // First level HP is the max dice roll + const. mod.
             int hp = classes.First().HitDiceValue + constitutionMod;
 
             foreach (CreateCharacterClass characterClass in classes)
             {
-                for (int i = 0; i < characterClass.ClassLevel; i++)
+                // start at 2 rather than 1 because first level was calculated above
+                for (int i = 2; i <= characterClass.ClassLevel; i++)
                 {
-                    hp += roller.RollAverageOrBetter(characterClass.HitDiceValue);
+                    hp += _diceRollService.RollAverageOrBetter(characterClass.HitDiceValue);
                     hp += constitutionMod;
                 }
             }

@@ -22,9 +22,9 @@ namespace Ddb.Tests.DomainTests
             instance.Status.Should().Be(LifeStatus.Stable);
             instance.DeathSavingThrowFailures.Should().Be(0);
             instance.DeathSavingThrowSuccesses.Should().Be(0);
-            instance.Immunities.Count.Should().Be(0);
-            instance.Resistances.Count.Should().Be(0);
-            instance.Vulnerabilities.Count.Should().Be(0);
+            instance.Immunities.Should().HaveCount(0);
+            instance.Resistances.Should().HaveCount(0);
+            instance.Vulnerabilities.Should().HaveCount(0);
         }
 
         [Fact]
@@ -35,7 +35,7 @@ namespace Ddb.Tests.DomainTests
             // Act
             instance.AddImmunity(DamageTypes.Fire);
             // Assert
-            instance.Immunities.Count.Should().Be(1);
+            instance.Immunities.Should().HaveCount(1);
             instance.Immunities[0].Should().Be(DamageTypes.Fire);
         }
 
@@ -47,7 +47,7 @@ namespace Ddb.Tests.DomainTests
             // Act
             instance.AddResistance(DamageTypes.Fire);
             // Assert
-            instance.Resistances.Count.Should().Be(1);
+            instance.Resistances.Should().HaveCount(1);
             instance.Resistances[0].Should().Be(DamageTypes.Fire);
         }
 
@@ -59,7 +59,7 @@ namespace Ddb.Tests.DomainTests
             // Act
             instance.AddVulnerability(DamageTypes.Fire);
             // Assert
-            instance.Vulnerabilities.Count.Should().Be(1);
+            instance.Vulnerabilities.Should().HaveCount(1);
             instance.Vulnerabilities[0].Should().Be(DamageTypes.Fire);
         }
 
@@ -208,6 +208,229 @@ namespace Ddb.Tests.DomainTests
             instance.DealDamages(damages);
             // Assert
             instance.CurrentHp.Should().Be(37);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldSumAllDamage_WhenMultipleDamages()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 1},
+                new DealDamage {DamageType = DamageTypes.Cold, Hp = 2},
+                new DealDamage {DamageType = DamageTypes.Necrotic, Hp = 3},
+                new DealDamage {DamageType = DamageTypes.Psychic, Hp = 4},
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(32);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldDoNoDamage_WhenImmunity()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            instance.AddImmunity(DamageTypes.Fire);
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 5}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(42);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldDoHalfDamageRoundedDown_WhenResitance()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            instance.AddResistance(DamageTypes.Fire);
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 5}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(40);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldDoDoubleDamage_WhenVulnerability()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            instance.AddVulnerability(DamageTypes.Fire);
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 5}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(32);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldOnlyDoHalfDamage_WhenMultipleResistances()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            instance.AddResistance(DamageTypes.Fire);
+            instance.AddResistance(DamageTypes.Fire);
+            instance.AddResistance(DamageTypes.Fire);
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 8}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(38);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldProcessResistanceThenVulnerability_WhenBoth()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            instance.AddResistance(DamageTypes.Fire);
+            instance.AddVulnerability(DamageTypes.Fire);
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 9}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(34);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldUseTemporaryHPOnly_WhenEnough()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            instance.AddTemporaryHp(5);
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 5}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(42);
+            instance.TemporaryHp.Should().Be(0);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldUseTemporaryHPThenCurrentHP_WhenNotEnough()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            instance.AddTemporaryHp(5);
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 10}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(37);
+            instance.TemporaryHp.Should().Be(0);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldIncrememntFailures_WhenDying()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            instance.CurrentHp = 0;
+            instance.Status = LifeStatus.Dying;
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 5}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(0);
+            instance.DeathSavingThrowFailures.Should().Be(1);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldChangeStatusToDead_WhenDyingAndDamageIsMaxOrMore()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            instance.CurrentHp = 0;
+            instance.Status = LifeStatus.Dying;
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 42}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(0);
+            instance.DeathSavingThrowFailures.Should().Be(0);
+            instance.Status.Should().Be(LifeStatus.Dead);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldChangeStatusToDying_WhenStableAndDamageIsSameAsCurrent()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 42}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(0);
+            instance.DeathSavingThrowFailures.Should().Be(0);
+            instance.Status.Should().Be(LifeStatus.Dying);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldNotHaveNegativeHP_WhenDamageIsMoreThanCurrent()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 45}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(0);
+            instance.DeathSavingThrowFailures.Should().Be(0);
+            instance.Status.Should().Be(LifeStatus.Dying);
+        }
+
+        [Fact]
+        public void DealDamages_ShouldChangeStatusToDead_WhenRemainingDamageIsMaxOrMore()
+        {
+            // Arrange
+            var instance = new HitPoints(42);
+            var damages = new DealDamage[]
+            {
+                new DealDamage {DamageType = DamageTypes.Fire, Hp = 84}
+            };
+            // Act
+            instance.DealDamages(damages);
+            // Assert
+            instance.CurrentHp.Should().Be(0);
+            instance.DeathSavingThrowFailures.Should().Be(0);
+            instance.Status.Should().Be(LifeStatus.Dead);
         }
     }
 }

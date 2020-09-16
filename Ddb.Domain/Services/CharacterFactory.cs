@@ -9,10 +9,17 @@ namespace Ddb.Domain.Services
 {
     public class CharacterFactory
     {
-        public static Character New(CreateCharacter command)
+        private readonly HitDiceService _hitDiceService;
+
+        public CharacterFactory(HitDiceService hitDiceService = null)
+        {
+            _hitDiceService = hitDiceService != null ? hitDiceService : new HitDiceService();
+        }
+
+        public Character BuildCharacter(CreateCharacter command)
         {
             int constitutionMod = StatService.CalcCurrentModifier(StatNames.Constitution, command.Stats.Constitution, command.Items);
-            int hp = HitDiceService.CalculateInitialHP(command.Classes, constitutionMod);
+            int hp = _hitDiceService.CalculateInitialHP(command.Classes, constitutionMod);
             var hitPoints = new HitPoints(hp);
             if (command.Defenses != null)
             {
@@ -28,7 +35,7 @@ namespace Ddb.Domain.Services
             return new Character(command.Name, hitPoints);
         }
 
-        private static void AddDamageModifiers(HitPoints hitPoints, IEnumerable<CreateDefense> defenses)
+        private void AddDamageModifiers(HitPoints hitPoints, IEnumerable<CreateDefense> defenses)
         {
             foreach (var defense in defenses)
             {
