@@ -14,15 +14,18 @@ From debugger pane in VS Code, select the ".NET Core Launch (web)" option, and c
 Similarly, navigate to http://localhost:5000/swagger to see the auto-generated Swagger Doc, which lists the API endpoints along with example requests.
 
 ## Running the unit tests
-TODO
+```
+cd Ddb.Tests
+dotnet test
+```
 
 ## Structure of the code
 The code is structured based on [Onion Architecture](https://www.codeguru.com/csharp/csharp/cs_misc/designtechniques/understanding-onion-architecture.html) and makes use of [Domain Driven Design](https://martinfowler.com/tags/domain%20driven%20design.html) principles. Some inspiration is taken from [CQRS](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/apply-simplified-microservice-cqrs-ddd-patterns) in that the _write model_ (the commands) are unique from the _read model_ (the views).
 
-* Everything specifically related to Dungeons & Dragons is in the **Domain Layer** in the `Ddb.Domain` project.
+* Everything specifically related to Dungeons &amp; Dragons is in the **Domain Layer** in the `Ddb.Domain` project.
 * Technical concerns such as data persistance are in the **Infrastructure Layer** in the `Ddb.Infrastructure` project.
 * API controllers are in the `Ddb.Api` project. This is thought of as specialized infrastructure, and is an entrypoint into the application.
-* The "features of the software" are in the **Application Layer** in the `Ddb.Application` project. Important things such as retrieving data and emitting events are orchestrated here, but notably is not concerned with the rules of Dungeons & Dragons, like the Domain Layer is. The API is one entry point to the Application Layer, but in the future there might be other entry points, such as asyncronous messaging (AMQP or SQS) or websockets, for example.
+* The "features of the software" are in the **Application Layer** in the `Ddb.Application` project. Important things such as retrieving data and emitting events are orchestrated here, but notably is not concerned with the rules of Dungeons &amp; Dragons, like the Domain Layer is. The API is one entry point to the Application Layer, but in the future there might be other entry points, such as asyncronous messaging (AMQP or SQS) or websockets, for example.
 
 ## Things to do to make the app ready for production
 * Add authentication and authorization.
