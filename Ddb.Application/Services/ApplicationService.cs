@@ -12,16 +12,18 @@ namespace Ddb.Application.Services
     {
         private readonly ICharacterRepository _characterRepository;
         private readonly IEventBus _eventBus;
+        private readonly CharacterFactory _characterFactory;
 
-        public ApplicationService(ICharacterRepository characterRepository, IEventBus eventBus)
+        public ApplicationService(ICharacterRepository characterRepository, IEventBus eventBus, CharacterFactory characterFactory = null)
         {
             _characterRepository = characterRepository;
             _eventBus = eventBus;
+            _characterFactory = characterFactory != null ? characterFactory : new CharacterFactory();
         }
 
         public async Task<CharacterView> CreateCharacterAsync(CreateCharacter command)
         {
-            var character = new CharacterFactory().BuildCharacter(command);
+            var character = _characterFactory.BuildCharacter(command);
             await _characterRepository.SaveAsync(character);
             var characterView = new CharacterView(character);
             await _eventBus.PublishAsync<CharacterView>(characterView);

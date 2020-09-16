@@ -19,7 +19,7 @@ namespace Ddb.Tests.DomainTests
             instance.CurrentHp.Should().Be(42);
             instance.TemporaryHp.Should().Be(0);
             instance.MaxHp.Should().Be(42);
-            instance.Status.Should().Be(LifeStatus.Stable);
+            instance.Status.Should().Be(LifeStatuses.Stable);
             instance.DeathSavingThrowFailures.Should().Be(0);
             instance.DeathSavingThrowSuccesses.Should().Be(0);
             instance.Immunities.Should().HaveCount(0);
@@ -85,7 +85,7 @@ namespace Ddb.Tests.DomainTests
             instance.AddDeathSavingThrowFailure();
             // Assert
             instance.DeathSavingThrowFailures.Should().Be(3);
-            instance.Status.Should().Be(LifeStatus.Dead);
+            instance.Status.Should().Be(LifeStatuses.Dead);
         }
 
         [Fact]
@@ -128,7 +128,7 @@ namespace Ddb.Tests.DomainTests
         {
             // Arrange
             var instance = new HitPoints(42);
-            instance.Status = LifeStatus.Dead;
+            instance.Status = LifeStatuses.Dead;
             // Act
             instance.AddTemporaryHp(5);
             // Assert
@@ -165,14 +165,14 @@ namespace Ddb.Tests.DomainTests
             // Arrange
             var instance = new HitPoints(42);
             instance.CurrentHp = 0;
-            instance.Status = LifeStatus.Dying;
+            instance.Status = LifeStatuses.Dying;
             instance.DeathSavingThrowFailures = 2;
             instance.DeathSavingThrowSuccesses = 1;
             // Act
             instance.HealHp(3);
             // Assert
             instance.CurrentHp.Should().Be(3);
-            instance.Status.Should().Be(LifeStatus.Stable);
+            instance.Status.Should().Be(LifeStatuses.Stable);
             instance.DeathSavingThrowFailures.Should().Be(0);
             instance.DeathSavingThrowSuccesses.Should().Be(0);
         }
@@ -183,14 +183,14 @@ namespace Ddb.Tests.DomainTests
             // Arrange
             var instance = new HitPoints(42);
             instance.CurrentHp = 0;
-            instance.Status = LifeStatus.Dead;
+            instance.Status = LifeStatuses.Dead;
             instance.DeathSavingThrowFailures = 3;
             instance.DeathSavingThrowSuccesses = 1;
             // Act
             instance.HealHp(3);
             // Assert
             instance.CurrentHp.Should().Be(0);
-            instance.Status.Should().Be(LifeStatus.Dead);
+            instance.Status.Should().Be(LifeStatuses.Dead);
             instance.DeathSavingThrowFailures.Should().Be(3);
             instance.DeathSavingThrowSuccesses.Should().Be(1);
         }
@@ -351,7 +351,7 @@ namespace Ddb.Tests.DomainTests
             // Arrange
             var instance = new HitPoints(42);
             instance.CurrentHp = 0;
-            instance.Status = LifeStatus.Dying;
+            instance.Status = LifeStatuses.Dying;
             var damages = new DealDamage[]
             {
                 new DealDamage {DamageType = DamageTypes.Fire, Hp = 5}
@@ -369,7 +369,7 @@ namespace Ddb.Tests.DomainTests
             // Arrange
             var instance = new HitPoints(42);
             instance.CurrentHp = 0;
-            instance.Status = LifeStatus.Dying;
+            instance.Status = LifeStatuses.Dying;
             var damages = new DealDamage[]
             {
                 new DealDamage {DamageType = DamageTypes.Fire, Hp = 42}
@@ -379,7 +379,7 @@ namespace Ddb.Tests.DomainTests
             // Assert
             instance.CurrentHp.Should().Be(0);
             instance.DeathSavingThrowFailures.Should().Be(0);
-            instance.Status.Should().Be(LifeStatus.Dead);
+            instance.Status.Should().Be(LifeStatuses.Dead);
         }
 
         [Fact]
@@ -396,7 +396,7 @@ namespace Ddb.Tests.DomainTests
             // Assert
             instance.CurrentHp.Should().Be(0);
             instance.DeathSavingThrowFailures.Should().Be(0);
-            instance.Status.Should().Be(LifeStatus.Dying);
+            instance.Status.Should().Be(LifeStatuses.Dying);
         }
 
         [Fact]
@@ -413,7 +413,7 @@ namespace Ddb.Tests.DomainTests
             // Assert
             instance.CurrentHp.Should().Be(0);
             instance.DeathSavingThrowFailures.Should().Be(0);
-            instance.Status.Should().Be(LifeStatus.Dying);
+            instance.Status.Should().Be(LifeStatuses.Dying);
         }
 
         [Fact]
@@ -430,7 +430,7 @@ namespace Ddb.Tests.DomainTests
             // Assert
             instance.CurrentHp.Should().Be(0);
             instance.DeathSavingThrowFailures.Should().Be(0);
-            instance.Status.Should().Be(LifeStatus.Dead);
+            instance.Status.Should().Be(LifeStatuses.Dead);
         }
     }
 }

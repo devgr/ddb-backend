@@ -11,7 +11,7 @@ namespace Ddb.Api.Models
         public int MaxHp { get; set; }
         public int CurrentHp { get; set; }
         public int TemporaryHp { get; set; }
-        public LifeStatus Status { get; set; }
+        public LifeStatuses Status { get; set; }
         public int DeathSavingThrowSuccesses { get; set; }
         public int DeathSavingThrowFailures { get; set; }
 

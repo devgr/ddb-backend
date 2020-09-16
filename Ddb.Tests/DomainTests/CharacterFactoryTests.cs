@@ -6,6 +6,7 @@ using Ddb.Domain.Models;
 using Ddb.Domain.Enums;
 using Ddb.Domain.Commands;
 using Ddb.Domain.Services;
+using Ddb.Tests.Factories;
 
 namespace Ddb.Tests.DomainTests
 {
@@ -14,7 +15,7 @@ namespace Ddb.Tests.DomainTests
         private readonly CharacterFactory _instance;
         public CharacterFactoryTests()
         {
-            // Providing a seed to the DiceRollService to get deterministic results for testing.
+            // Provide a seed to the DiceRollService to get deterministic results for testing.
             var diceRollService = new DiceRollService(1);
             var hitDiceService = new HitDiceService(diceRollService);
             _instance = new CharacterFactory(hitDiceService);

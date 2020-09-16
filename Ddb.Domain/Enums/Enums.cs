@@ -36,7 +36,7 @@ namespace Ddb.Domain.Enums
         Vulnerability
     }
 
-    public enum LifeStatus
+    public enum LifeStatuses
     {
         Stable,
         Dying,

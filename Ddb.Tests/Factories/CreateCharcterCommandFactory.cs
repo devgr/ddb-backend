@@ -4,7 +4,7 @@ using Ddb.Domain.Enums;
 using Ddb.Domain.Commands;
 using Ddb.Domain.Services;
 
-namespace Ddb.Tests.DomainTests
+namespace Ddb.Tests.Factories
 {
     /// <summary>
     /// Helper methods for creating various commands for different test scenarios.

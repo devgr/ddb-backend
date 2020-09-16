@@ -18,7 +18,7 @@ namespace Ddb.Domain.Models
         // Possible future refactor: Rather than simple lists of enums, make a complex object
         // with an id to allow for removing specific immunities / resistances / vulnerabilities.
 
-        public LifeStatus Status { get; set; }
+        public LifeStatuses Status { get; set; }
         public int DeathSavingThrowSuccesses { get; set; }
         public int DeathSavingThrowFailures { get; set; }
 
@@ -30,7 +30,7 @@ namespace Ddb.Domain.Models
             Immunities = new List<DamageTypes>();
             Resistances = new List<DamageTypes>();
             Vulnerabilities = new List<DamageTypes>();
-            Status = LifeStatus.Stable;
+            Status = LifeStatuses.Stable;
             DeathSavingThrowSuccesses = 0;
             DeathSavingThrowFailures = 0;
         }
@@ -55,13 +55,13 @@ namespace Ddb.Domain.Models
             DeathSavingThrowFailures++;
             if (DeathSavingThrowFailures >= 3)
             {
-                Status = LifeStatus.Dead;
+                Status = LifeStatuses.Dead;
             }
         }
 
         public void AddTemporaryHp(int temporaryHp)
         {
-            if (Status != LifeStatus.Dead) // You can get temp hp while dying, but not while dead
+            if (Status != LifeStatuses.Dead) // You can get temp hp while dying, but not while dead
             {
                 // When new temporary hit points are added, the player can choose to keep their current
                 // temporary hp, or take the new temporary hp. The new temporary hp cannot be added
@@ -75,7 +75,7 @@ namespace Ddb.Domain.Models
 
         public void HealHp(int hp)
         {
-            if (Status != LifeStatus.Dead) // You can't resurrect characters with normal healing
+            if (Status != LifeStatuses.Dead) // You can't resurrect characters with normal healing
             {
                 // Hit points are added to the current hit points, up to the max.
                 // Temporary hit points are not healed.
@@ -86,9 +86,9 @@ namespace Ddb.Domain.Models
                     CurrentHp = MaxHp;
                 }
 
-                if (Status == LifeStatus.Dying)
+                if (Status == LifeStatuses.Dying)
                 {
-                    Status = LifeStatus.Stable;
+                    Status = LifeStatuses.Stable;
                     DeathSavingThrowSuccesses = 0;
                     DeathSavingThrowFailures = 0;
                 }
@@ -97,7 +97,7 @@ namespace Ddb.Domain.Models
 
         public void DealDamages(IEnumerable<DealDamage> damages)
         {
-            if (Status != LifeStatus.Dead) // Already dead!
+            if (Status != LifeStatuses.Dead) // Already dead!
             {
                 // Add up the hp for each type of damage
                 int totalHpDamage = 0;
@@ -150,12 +150,12 @@ namespace Ddb.Domain.Models
             TemporaryHp = 0;
 
             // If character is already dying, any damage counts as 1 failure
-            if (Status == LifeStatus.Dying)
+            if (Status == LifeStatuses.Dying)
             {
                 // If damage meets or exceeds max hp, then character is dead
                 if (totalHpDamage >= MaxHp)
                 {
-                    Status = LifeStatus.Dead;
+                    Status = LifeStatuses.Dead;
                     return;
                 }
 
@@ -176,12 +176,12 @@ namespace Ddb.Domain.Models
             // Check for insta-kill
             if (totalHpDamage >= MaxHp)
             {
-                Status = LifeStatus.Dead;
+                Status = LifeStatuses.Dead;
                 return; // super dead
             }
 
             // Otherwise, just dying
-            Status = LifeStatus.Dying;
+            Status = LifeStatuses.Dying;
         }
     }
 }
